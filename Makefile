@@ -25,6 +25,8 @@ OBJECTS += \
        $(DRIVER)/stm32f4xx_hal_gpio.o \
        $(DRIVER)/stm32f4xx_hal_rcc.o \
        $(DRIVER)/stm32f4xx_hal_dma.o \
+       $(DRIVER)/stm32f4xx_hal_tim.o \
+       $(DRIVER)/stm32f4xx_hal_tim_ex.o \
        $(DRIVER)/stm32f4xx_hal_spi.o \
        $(DRIVER)/stm32f4xx_hal_i2c.o \
        $(DRIVER)/stm32f4xx_hal_i2c_ex.o \

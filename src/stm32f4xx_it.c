@@ -63,4 +63,26 @@ void SysTick_Handler(void)
   HAL_IncTick();
 }
 
+/* This function handles DMA1 stream0 global interrupt */
+void DMA1_Stream0_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+}
 
+/* This function handles DMA1 stream6 global interrupt */
+void DMA1_Stream6_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+}
+
+/* This function handles CAN2 RX0 interrupts */
+void CAN2_RX0_IRQHandler(void)
+{
+  HAL_CAN_IRQHandler(&hcan2);
+}
+
+/* This function handles CAN2 RX1 interrupt */
+void CAN2_RX1_IRQHandler(void)
+{
+  HAL_CAN_IRQHandler(&hcan2);
+}
