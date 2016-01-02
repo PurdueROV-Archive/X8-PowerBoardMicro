@@ -6,7 +6,7 @@
 #include "stm32f4xx_it.h"
 #include "stm32f4xx.h"
 #include <stdint.h>
-#include <stm32f405xx.h>
+#include <stm32f407xx.h>
 #include "init.h"
 
 
