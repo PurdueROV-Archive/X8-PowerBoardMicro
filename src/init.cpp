@@ -29,6 +29,7 @@ void initEverythig(void)
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 
+
  	//must be included to initially configure the library
 	HAL_Init();
 

@@ -1,5 +1,5 @@
 //put all of your #includes into main.h file
-#include "main.h" 
+#include "main.h"
 
 /*CAN2 GPIO Configuration    
     PB5  ------> CAN2_RX
@@ -26,20 +26,11 @@
 */
 
 int main(void) {
+
 	initEverythig();
 
-	uint8_t aTxBuffer[1] = {1};
 
 	while (1) {
-
-
-		if(HAL_I2C_Master_Transmit_DMA(&hi2c1, (uint16_t)2, (uint8_t*)aTxBuffer, 1) != HAL_OK)
-		{
-			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_11);
-		}
-
-
-		HAL_Delay(400);
 
 	}
 }

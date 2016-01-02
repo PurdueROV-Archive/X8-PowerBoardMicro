@@ -10,7 +10,10 @@ BUILD_DIR = build
 #Add any source files that you use here.  Remember to end them with .o
 OBJECTS = main.o \
 		 src/stm32f4xx_it.o \
-		src/init.o
+		src/init.o \
+		src/esc.o \
+		src/powerBrick.o \
+		src/thrusters.o
 
 
 
