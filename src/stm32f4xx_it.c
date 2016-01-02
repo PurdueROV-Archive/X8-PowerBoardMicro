@@ -1,11 +1,10 @@
 #include "main.h"
-#include "stm32f4xx_it.h"
+
 
 
 void NMI_Handler(void)
 {
 } 
-
 
 void HardFault_Handler(void)
 {
@@ -15,7 +14,6 @@ void HardFault_Handler(void)
   }
 }
 
-
 void MemManage_Handler(void)
 {
   /* Go to infinite loop when Memory Manage exception occurs */
@@ -24,7 +22,6 @@ void MemManage_Handler(void)
   }
 }
 
-
 void BusFault_Handler(void)
 {
   /* Go to infinite loop when Bus Fault exception occurs */
@@ -32,7 +29,6 @@ void BusFault_Handler(void)
   {
   }
 }
-
 
 void UsageFault_Handler(void)
 {
@@ -63,25 +59,21 @@ void SysTick_Handler(void)
   HAL_IncTick();
 }
 
-/* This function handles DMA1 stream0 global interrupt */
 void DMA1_Stream0_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_i2c1_rx);
 }
 
-/* This function handles DMA1 stream6 global interrupt */
 void DMA1_Stream6_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_i2c1_tx);
 }
 
-/* This function handles CAN2 RX0 interrupts */
 void CAN2_RX0_IRQHandler(void)
 {
   HAL_CAN_IRQHandler(&hcan2);
 }
 
-/* This function handles CAN2 RX1 interrupt */
 void CAN2_RX1_IRQHandler(void)
 {
   HAL_CAN_IRQHandler(&hcan2);

@@ -13,5 +13,4 @@
 
 #define CAN_ID	0x11
 
-
 #endif /* __MAIN_H */

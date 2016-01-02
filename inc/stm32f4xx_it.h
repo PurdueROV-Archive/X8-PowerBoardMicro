@@ -23,6 +23,12 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 
+void DMA1_Stream0_IRQHandler(void);
+void DMA1_Stream6_IRQHandler(void);
+//void CAN2_RX0_IRQHandler(void);
+//void CAN2_RX1_IRQHandler(void);
+void CAN1_RX0_IRQHandler(void);
+
 
 #ifdef __cplusplus
 }

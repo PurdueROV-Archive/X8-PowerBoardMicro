@@ -1,21 +1,20 @@
 /*This folder will be used to hold all code used to initialize pins */
 
-#include "main.h"
+#include "init.h"
+#include "stm32f4xx_hal.h"
 
-//structures used by the pwm
+
 TIM_OC_InitTypeDef sConfigOC;
-TIM_HandleTypeDef htim3;
 
-/* structures used in i2c with dma */
+CAN_HandleTypeDef hcan2;
+
 I2C_HandleTypeDef hi2c1;
+
 DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-/*structues used in can */
-CAN_HandleTypeDef hcan2;
-CanTxMsgTypeDef   TxMessage;
-CanRxMsgTypeDef   RxMessage;
 
+TIM_HandleTypeDef htim3;
 
 //this function will call all of the other initialization functions
 void initEverythig(void)
@@ -24,103 +23,109 @@ void initEverythig(void)
  	__GPIOA_CLK_ENABLE();
  	__GPIOB_CLK_ENABLE();
  	__GPIOC_CLK_ENABLE();
+ 	__GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
 
-	//must be included to initially configure the library
+ 	//must be included to initially configure the library
 	HAL_Init();
 
-	/* Configure the system clock to 100 MHz */
+	/* Configure the system clock */
 	SystemClock_Config();
 
-	initDebugLeds(); //initialize the debugging LEDS
+	initDebugLeds();
 
-	initPwm();
+	HAL_MspInit();
 
-	initI2C();
+	MX_DMA_Init();
 
 	initCan();
 
-	HAL_MspInit();
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+
+
+
+
+	initI2C();
+
+	GPIO_InitStruct.Pin = GPIO_PIN_6;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF9_CAN2;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	initPwm();
 }
 
+/* checked! */
 void initPwm(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	__TIM3_CLK_ENABLE();
-  
-    /**TIM3 GPIO Configuration    
-    PC6     ------> TIM3_CH1 
+
+	/**TIM3 GPIO Configuration
+    PC6     ------> TIM3_CH1
     */
-    GPIO_InitStruct.Pin = esc_pwm_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-    HAL_GPIO_Init(esc_pwm_GPIO_Port, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = esc_pwm_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+	HAL_GPIO_Init(esc_pwm_GPIO_Port, &GPIO_InitStruct);
 
 
 	//TIM_MasterConfigTypeDef sMasterConfig;
- 	TIM_OC_InitTypeDef sConfigOC;
+	TIM_OC_InitTypeDef sConfigOC;
 
- 	htim3.Instance = TIM3;
-  	htim3.Init.Prescaler = SystemCoreClock;
- 	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
- 	htim3.Init.Period = 1000;
- 	htim3.Init.ClockDivision = 0;
- 	HAL_TIM_PWM_Init(&htim3);
+	htim3.Instance = TIM3;
+	htim3.Init.Prescaler = SystemCoreClock;
+	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+	htim3.Init.Period = 1000;
+	htim3.Init.ClockDivision = 0;
+	HAL_TIM_PWM_Init(&htim3);
 
-  	/*sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  	HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig);*/
+	/*sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig);*/
 
-  	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  	sConfigOC.Pulse = 500;
-  	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1);
+	sConfigOC.OCMode = TIM_OCMODE_PWM1;
+	sConfigOC.Pulse = 500;
+	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1);
 
-  	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+
 }
 
+/* checked! */
 void initI2C(void)
 {
-
 	GPIO_InitTypeDef GPIO_InitStruct;
 
-	GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+	/**I2C1 GPIO Configuration    
+    PB7     ------> I2C1_SDA
+    PB8     ------> I2C1_SCL 
+    */
+
+    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+
+
+
     /* Peripheral clock enable */
     __I2C1_CLK_ENABLE();
 
-
-    hi2c1.Instance = I2C1;
-  	hi2c1.Init.ClockSpeed = 100000;
-  	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  	hi2c1.Init.OwnAddress1 = 0;
-  	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  	hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLED;
-  	hi2c1.Init.OwnAddress2 = 0;
-  	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLED;
-  	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLED;
-  	HAL_I2C_Init(&hi2c1);
-
-
-	/* DMA controller clock enable */
-  	__DMA1_CLK_ENABLE();
-
- 	/* DMA interrupt init */
- 	HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
- 	HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
- 	HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
-  	HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
-
-
-    /* Peripheral DMA init*/
     hdma_i2c1_rx.Instance = DMA1_Stream0;
     hdma_i2c1_rx.Init.Channel = DMA_CHANNEL_1;
     hdma_i2c1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
@@ -148,6 +153,30 @@ void initI2C(void)
     HAL_DMA_Init(&hdma_i2c1_tx);
 
     __HAL_LINKDMA(&hi2c1,hdmatx,hdma_i2c1_tx);
+
+    hi2c1.Instance = I2C1;
+	hi2c1.Init.ClockSpeed = 100000;
+ 	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  	hi2c1.Init.OwnAddress1 = 0;
+  	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  	hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLED;
+  	hi2c1.Init.OwnAddress2 = 0;
+  	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLED;
+  	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLED;
+  	HAL_I2C_Init(&hi2c1);
+}
+
+void MX_DMA_Init(void) 
+{
+  /* DMA controller clock enable */
+  __DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
 }
 
 void initCan(void)
@@ -155,64 +184,64 @@ void initCan(void)
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	__CAN2_CLK_ENABLE();
-    __CAN1_CLK_ENABLE();
+	__CAN1_CLK_ENABLE();
 
-    /**CAN2 GPIO Configuration    
+	/**CAN2 GPIO Configuration
     PB12     ------> CAN2_RX
-    PB13     ------> CAN2_TX 
+    PB13     ------> CAN2_TX
     */
 
-    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF9_CAN2;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF9_CAN2;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  	/* Peripheral interrupt init*/
-    HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
-    HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(CAN2_RX1_IRQn);
-
-
-    hcan2.Instance = CAN2;
-  	hcan2.Init.Prescaler = 16;
-  	hcan2.Init.Mode = CAN_MODE_NORMAL;
-  	hcan2.Init.SJW = CAN_SJW_1TQ;
-  	hcan2.Init.BS1 = CAN_BS1_1TQ;
-  	hcan2.Init.BS2 = CAN_BS2_1TQ;
-  	hcan2.Init.TTCM = DISABLE;
-  	hcan2.Init.ABOM = DISABLE;
-  	hcan2.Init.AWUM = DISABLE;
-  	hcan2.Init.NART = DISABLE;
-  	hcan2.Init.RFLM = DISABLE;
-  	hcan2.Init.TXFP = DISABLE;
-  	
-  	HAL_CAN_Init(&hcan2);
-
-  	CAN_FilterConfTypeDef  sFilterConfig;
-
-  	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
-    sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-    sFilterConfig.FilterIdHigh = 0x0000;
-    sFilterConfig.FilterIdLow = 0x0000;
-    sFilterConfig.FilterMaskIdHigh = 0x0000;
-    sFilterConfig.FilterMaskIdLow = 0x0000;
-    sFilterConfig.FilterFIFOAssignment = 0;
-    sFilterConfig.FilterActivation = ENABLE;
-    sFilterConfig.BankNumber = 14;
-
-    HAL_CAN_ConfigFilter(&hcan2, &sFilterConfig);
-
-    //sets up the communication information
-    hcan2.pTxMsg->StdId = CAN_ID;  //the id of this microboard
-    
-    hcan2.pTxMsg->RTR = CAN_RTR_DATA;
-    hcan2.pTxMsg->IDE = CAN_ID_STD;
+	/* Peripheral interrupt init*/
+	HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
+	HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(CAN2_RX1_IRQn);
 
 
-  	HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
+	hcan2.Instance = CAN2;
+	hcan2.Init.Prescaler = 16;
+	hcan2.Init.Mode = CAN_MODE_NORMAL;
+	hcan2.Init.SJW = CAN_SJW_1TQ;
+	hcan2.Init.BS1 = CAN_BS1_1TQ;
+	hcan2.Init.BS2 = CAN_BS2_1TQ;
+	hcan2.Init.TTCM = DISABLE;
+	hcan2.Init.ABOM = DISABLE;
+	hcan2.Init.AWUM = DISABLE;
+	hcan2.Init.NART = DISABLE;
+	hcan2.Init.RFLM = DISABLE;
+	hcan2.Init.TXFP = DISABLE;
+
+	HAL_CAN_Init(&hcan2);
+
+	CAN_FilterConfTypeDef  sFilterConfig;
+
+	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+	sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+	sFilterConfig.FilterIdHigh = 0x0000;
+	sFilterConfig.FilterIdLow = 0x0000;
+	sFilterConfig.FilterMaskIdHigh = 0x0000;
+	sFilterConfig.FilterMaskIdLow = 0x0000;
+	sFilterConfig.FilterFIFOAssignment = 0;
+	sFilterConfig.FilterActivation = ENABLE;
+	sFilterConfig.BankNumber = 14;
+
+	HAL_CAN_ConfigFilter(&hcan2, &sFilterConfig);
+
+	//sets up the communication information
+	hcan2.pTxMsg->StdId = CAN_ID;  //the id of this microboard
+
+	hcan2.pTxMsg->RTR = CAN_RTR_DATA;
+	hcan2.pTxMsg->IDE = CAN_ID_STD;
+
+
+	HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
 }
 
 void HAL_MspInit(void)
@@ -228,23 +257,23 @@ void initDebugLeds(void)
 	GPIO_InitTypeDef  GPIO_InitStruct;
 
 	//enable the led clock
-	 __HAL_RCC_GPIOA_CLK_ENABLE();
+	 __HAL_RCC_GPIOD_CLK_ENABLE();
 
 	//configures the led pin  
-	GPIO_InitStruct.Pin = GPIO_PIN_4; 
+	GPIO_InitStruct.Pin = GPIO_PIN_11; 
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);  
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);  
 
-	GPIO_InitStruct.Pin = GPIO_PIN_5;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
 
-	GPIO_InitStruct.Pin = GPIO_PIN_6;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+	GPIO_InitStruct.Pin = GPIO_PIN_13;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
 
-	GPIO_InitStruct.Pin = GPIO_PIN_7;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+	GPIO_InitStruct.Pin = GPIO_PIN_14;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
 }
 
 //turns on and turns off the led
@@ -252,19 +281,19 @@ void LedOn(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
 	}
 }
 
@@ -273,19 +302,19 @@ void LedOff(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
 	}
 }
 
@@ -294,19 +323,19 @@ void LedToggle(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_11);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
 	}
 }
 
@@ -357,5 +386,3 @@ void Error_Handler(void)
   {
   }
 }
-
-
