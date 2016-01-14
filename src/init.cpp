@@ -366,19 +366,19 @@ void initDebugLeds(void)
 	 __HAL_RCC_GPIOD_CLK_ENABLE();
 
 	//configures the led pin  
-	GPIO_InitStruct.Pin = GPIO_PIN_11; 
+	GPIO_InitStruct.Pin = GPIO_PIN_12; 
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);  
 
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
-
 	GPIO_InitStruct.Pin = GPIO_PIN_13;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
 
 	GPIO_InitStruct.Pin = GPIO_PIN_14;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
+
+	GPIO_InitStruct.Pin = GPIO_PIN_15;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct); 
 
 }
@@ -388,19 +388,19 @@ void LedOn(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
 	}
 }
 
@@ -409,19 +409,19 @@ void LedOff(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
 	}
 }
 
@@ -430,19 +430,19 @@ void LedToggle(int ledNum)
 {
 	if(ledNum == 0)
 	{
-		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_11);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	}
 	else if(ledNum == 1)
 	{	
-		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
 	}
 	else if(ledNum == 2)
 	{
-		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
 	}
 	else if(ledNum == 3)
 	{
-		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
 	}
 }
 

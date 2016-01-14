@@ -21,7 +21,7 @@
 
 /* 	USEFULL FUNCTIONS
 
-	RED = ?; BLUE = ?; GREEN = ?; YELLOW = ?
+	RED; BLUE; GREEN; ORANGE
 
 	void LedOn(int ledNum);
 	void LedOff(int ledNum);

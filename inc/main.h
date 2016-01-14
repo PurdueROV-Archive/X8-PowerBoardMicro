@@ -17,4 +17,9 @@
 #define APP_CAN_ID 	0x12
 #define MAIN_CAN_ID 0x13
 
+#define GREEN 0
+#define ORANGE 1
+#define RED 2
+#define BLUE 3
+
 #endif /* __MAIN_H */
