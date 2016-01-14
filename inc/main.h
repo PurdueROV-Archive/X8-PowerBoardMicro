@@ -14,5 +14,7 @@
 #define esc_pwm_GPIO_Port GPIOC
 
 #define CAN_ID	0x11
+#define APP_CAN_ID 	0x12
+#define MAIN_CAN_ID 0x13
 
 #endif /* __MAIN_H */

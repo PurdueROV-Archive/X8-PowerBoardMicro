@@ -1,20 +1,23 @@
 //put all of your #includes into main.h file
 #include "main.h"
 
-/*CAN2 GPIO Configuration    
-    PB5  ------> CAN2_RX
-    PB6  ------> CAN2_TX */
+/*CAN2 communication    
+    PB12  ------> CAN2_RX
+    PB13  ------> CAN2_TX 
+    	* I2C_HandleTypeDef hcan2			  */
 
-/*I2C1 GPIO Configuration    
-    PB7  ------> I2C1_SDA
-    PB8  ------> I2C1_SCL */
+/*I2C1: Pressure sensor/IMU    
+    PB10  ------> I2C1_SDA
+    PB11  ------> I2C1_SCL 
+    	* CAN_HandleTypeDef hi2c2			  */
 
-/*TIM2 GPIO Configuration    
-    PA5  ------> TIM2_CH1 */
+/*esc for hydraulics    
+    PC6  ------> TIM2_CH1 
+    	*TIM_OC_InitTypeDef sConfigOC
+    	*TIM_HandleTypeDef htim3
+    	*TIM_CHANNEL_1						  */
 
-/**TIM5 GPIO Configuration    
-    PA0  ------> TIM5_CH1
-    PA3  ------> TIM5_CH4 */
+
 
 /* 	USEFULL FUNCTIONS
 
@@ -25,26 +28,45 @@
 	void LedToggle(int ledNum);
 */
 
+/*	
+	Example how to send can code 
+		
+	CanHandle.pTxMsg->DLC = 3; //sets the size of the message in bytes. Max 8 bytes per message
+
+	//sets the information that is sent over the message
+	CanHandle.pTxMsg->Data[0] = 5;
+    CanHandle.pTxMsg->Data[1] = 246;
+    CanHandle.pTxMsg->Data[2] = 17;
+
+	HAL_CAN_Transmit(&hcan2, 10);  //sends the message
+*/	
+
 int main(void) {
 
 	initEverythig();
 
-
 	while (1) {
+
 
 	}
 }
+
+
+
+
 /* This function is where messages from CAN
    communication are received */
-/*void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
+void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 {
 	//example on how to use this in callback function
 	if ((CanHandle->pRxMsg)->StdId == 0x11 && (CanHandle->pRxMsg)->IDE == CAN_ID_STD)
 	{
-
-
+			
 	}
-}*/
+
+	//restarts the interrupt
+	HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
+}
 
 
 

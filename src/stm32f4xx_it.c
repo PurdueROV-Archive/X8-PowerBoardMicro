@@ -59,14 +59,14 @@ void SysTick_Handler(void)
   HAL_IncTick();
 }
 
-void DMA1_Stream0_IRQHandler(void)
+void DMA1_Stream2_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+  HAL_DMA_IRQHandler(&hdma_i2c2_rx);
 }
 
-void DMA1_Stream6_IRQHandler(void)
+void DMA1_Stream7_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+  HAL_DMA_IRQHandler(&hdma_i2c2_tx);
 }
 
 void CAN2_RX0_IRQHandler(void)
