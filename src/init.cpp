@@ -3,6 +3,7 @@
 #include "init.h"
 #include "stm32f4xx_hal.h"
 
+uint16_t thruster[8];
 
 TIM_OC_InitTypeDef sConfigOC;
 
