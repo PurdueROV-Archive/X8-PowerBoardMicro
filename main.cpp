@@ -97,18 +97,19 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
-					//Test if all thruster commands are one
-					for (int i = 4; i < 8; i++)
-						if (thruster[i] != 1)
-							check = 0;
+					for(int i = 0; i < 8; i++)
+					{
+						printInt(i);
+						printString(": ");
+						printInt(thruster[i]);
+						printString("\t");
+					}
+					printString("\n");
 
-					if (check == 0)
-						LedOn(GREEN);
-					else
-						LedOff(GREEN);
+
 					receiveState++;
 					break;
-				//blink the orange light if a message containing all ones is received
+				
 			}
 		}
 		else {
