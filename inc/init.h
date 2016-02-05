@@ -4,6 +4,11 @@
 
 #include "main.h"
 
+extern uint16_t thruster[8];
+extern uint8_t receiveState;
+extern uint16_t voltage[8];
+extern uint16_t current[8];
+
 extern TIM_HandleTypeDef htim3;  //timer structure used in pwm
 extern TIM_OC_InitTypeDef sConfigOC;  //pwm settings structure
 

@@ -22,4 +22,6 @@
 #define RED 2
 #define BLUE 3
 
+//uint16_t thruster[8];
+
 #endif /* __MAIN_H */

@@ -3,6 +3,10 @@
 #include "init.h"
 #include "stm32f4xx_hal.h"
 
+uint16_t thruster[8];
+uint8_t receiveState = 255;
+uint16_t voltage[8];
+uint16_t current[8];
 
 TIM_OC_InitTypeDef sConfigOC;
 
