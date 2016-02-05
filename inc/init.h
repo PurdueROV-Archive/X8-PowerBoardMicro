@@ -15,6 +15,10 @@ extern DMA_HandleTypeDef hdma_i2c2_rx;  //i2c dma rx structure
 extern DMA_HandleTypeDef hdma_i2c2_tx;  //i2c dma tx structure
 extern I2C_HandleTypeDef hi2c2;
 
+extern DMA_HandleTypeDef hdma_usart1_rx;
+extern DMA_HandleTypeDef hdma_usart1_tx;
+extern UART_HandleTypeDef huart1;
+
 /* function that holds all of the other functions */
 void initEverythig(void);
 
@@ -35,6 +39,9 @@ void initCan(void);
 HAL_StatusTypeDef CAN_init(void);
 
 void MX_DMA_Init(void);
+
+void MX_USART1_UART_Init(void);
+
 
 //initializes nested vector interrupt handlers
 void HAL_MspInit(void);

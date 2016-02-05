@@ -1,6 +1,8 @@
 //put all of your #includes into main.h file
 #include "main.h"
 
+#include "print.h"
+
 /*CAN2 communication    
     PB12  ------> CAN2_RX
     PB13  ------> CAN2_TX 
@@ -17,7 +19,10 @@
     	*TIM_HandleTypeDef htim3
     	*TIM_CHANNEL_1						  */
 
-
+/*USART1 
+        PA9     ------> USART1_TX
+        PA10    ------> USART1_RX
+       		* UART_HandleTypeDef huart1   	*/
 
 /* 	USEFULL FUNCTIONS
 
@@ -46,12 +51,9 @@ int main(void) {
 	initEverythig();
 
 	while (1) {
-
-
+		
 	}
 }
-
-
 
 
 /* This function is where messages from CAN
@@ -66,6 +68,14 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 
 	//restarts the interrupt
 	HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle) {
+	
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle) {
+
 }
 
 

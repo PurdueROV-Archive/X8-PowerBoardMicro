@@ -13,7 +13,8 @@ OBJECTS = main.o \
 		src/init.o \
 		src/esc.o \
 		src/powerBrick.o \
-		src/thrusters.o
+		src/thrusters.o \
+		src/print.o
 
 
 
