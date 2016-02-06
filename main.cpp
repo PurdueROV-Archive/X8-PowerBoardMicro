@@ -44,8 +44,23 @@
 int main(void) {
 
 	initEverythig();
-
+	uint8_t test = 0;
 	while (1) {
+		hcan2.pTxMsg->DLC = 1;
+		hcan2.pTxMsg->Data[0] = 7;
+		HAL_CAN_Transmit(&hcan2, 100);
+		hcan2.pTxMsg->DLC = 8;
+		hcan2.pTxMsg->Data[0] = 0xAB;
+		hcan2.pTxMsg->Data[1] = 0xAB;
+		hcan2.pTxMsg->Data[2] = 0xAB;
+		hcan2.pTxMsg->Data[3] = (test > 1 ? 0xAB : 0x88);
+		hcan2.pTxMsg->Data[4] = 0xAB;
+		hcan2.pTxMsg->Data[5] = 0xAB;
+		hcan2.pTxMsg->Data[6] = 0xAB;
+		hcan2.pTxMsg->Data[7] = 0xAB;
+		HAL_CAN_Transmit(&hcan2, 100);
+		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
+		test = (test >= 4 ? 0 : test + 1);
 		LedToggle(ORANGE);
 		HAL_Delay(500);
 	}
@@ -70,12 +85,14 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
+						if (thruster[j] != 1)
+							check = 0;
 						j++;
 					}
 					//Test if all thruster commands are one
-					for (int i = 0; i < 4; i++)
+					/*for (int i = 0; i < 4; i++)
 						if (thruster[i] != 1)
-							check = 0;
+							check = 0;*/
 
 					if (check == 0)
 						LedOn(RED);
