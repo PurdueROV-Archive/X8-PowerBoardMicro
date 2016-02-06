@@ -78,3 +78,11 @@ void CAN2_RX1_IRQHandler(void)
 {
   HAL_CAN_IRQHandler(&hcan2);
 }
+
+void DMA2_Stream2_IRQHandler(void) {
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+}
+
+void DMA2_Stream7_IRQHandler(void) {
+  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+}
