@@ -1,6 +1,7 @@
 //put all of your #includes into main.h file
 #include "main.h"
 
+#include "print.h"
 /*CAN2 communication    
     PB12  ------> CAN2_RX
     PB13  ------> CAN2_TX 
@@ -46,6 +47,7 @@ int main(void) {
 	initEverythig();
 	uint8_t test = 0;
 	while (1) {
+		/* Test Sending Data back to main micro board */
 		hcan2.pTxMsg->DLC = 1;
 		hcan2.pTxMsg->Data[0] = 7;
 		HAL_CAN_Transmit(&hcan2, 100);
@@ -59,8 +61,8 @@ int main(void) {
 		hcan2.pTxMsg->Data[6] = 0xAB;
 		hcan2.pTxMsg->Data[7] = 0xAB;
 		HAL_CAN_Transmit(&hcan2, 100);
-		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
 		test = (test >= 4 ? 0 : test + 1);
+		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
 		LedToggle(ORANGE);
 		HAL_Delay(500);
 	}
@@ -85,19 +87,9 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
-						if (thruster[j] != 1)
-							check = 0;
 						j++;
 					}
-					//Test if all thruster commands are one
-					/*for (int i = 0; i < 4; i++)
-						if (thruster[i] != 1)
-							check = 0;*/
 
-					if (check == 0)
-						LedOn(RED);
-					else
-						LedOff(RED);
 					receiveState++;
 					break;
 				case 1:
@@ -108,18 +100,17 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
-					//Test if all thruster commands are one
-					for (int i = 4; i < 8; i++)
-						if (thruster[i] != 1)
-							check = 0;
+					for(int i = 0; i < 8; i++)
+					{
+						printInt(i);
+						printString(": ");
+						printInt(thruster[i]);
+						printString("\t");
+					}
+					printString("\n");
 
-					if (check == 0)
-						LedOn(GREEN);
-					else
-						LedOff(GREEN);
 					receiveState++;
 					break;
-				//blink the orange light if a message containing all ones is received
 			}
 		}
 		else {
@@ -132,6 +123,12 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 	if(HAL_CAN_Receive_IT(CanHandle, CAN_FIFO0) == HAL_OK)
 		LedToggle(BLUE);
 }
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle) {
 
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle) {
+
+}
 
 
