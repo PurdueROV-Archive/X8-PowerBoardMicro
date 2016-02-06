@@ -14,7 +14,10 @@ OBJECTS = main.o \
 		src/esc.o \
 		src/powerBrick.o \
 		src/thrusters.o \
-		src/print.o
+		src/print.o \
+		src/overseer.o \
+		src/matrices.o \
+		src/thrust_mapper.o
 
 
 
