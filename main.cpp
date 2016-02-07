@@ -40,12 +40,18 @@
     CanHandle.pTxMsg->Data[2] = 17;
 
 	HAL_CAN_Transmit(&hcan2, 10);  //sends the message
-*/	
+*/
+
+Overseer overseer;
+volatile uint_fast8_t RampTicker;
 
 int main(void) {
 
 	initEverythig();
 	uint8_t test = 0;
+
+	overseer = Overseer();
+
 	while (1) {
 		/* Test Sending Data back to main micro board */
 		hcan2.pTxMsg->DLC = 1;
@@ -64,6 +70,14 @@ int main(void) {
 		test = (test >= 4 ? 0 : test + 1);
 		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
 		LedToggle(ORANGE);
+
+		overseer.checkForUpdate();
+
+		if (RampTicker >= 20)
+        {
+            overseer.doRamping();
+            RampTicker = 0;
+        }
 		HAL_Delay(500);
 	}
 }

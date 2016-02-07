@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stm32f407xx.h>
 #include "init.h"
+#include "thrust_mapper.h"
+#include "overseer.h"
 
 
 #define esc_pwm_Pin GPIO_PIN_6
