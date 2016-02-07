@@ -2,6 +2,11 @@
 #include "main.h"
 
 #include "print.h"
+
+#include "overseer.h"
+#include "thrust_mapper.h"
+
+
 /*CAN2 communication    
     PB12  ------> CAN2_RX
     PB13  ------> CAN2_TX 
@@ -54,7 +59,7 @@ int main(void) {
 
 	while (1) {
 		/* Test Sending Data back to main micro board */
-		hcan2.pTxMsg->DLC = 1;
+		/*hcan2.pTxMsg->DLC = 1;
 		hcan2.pTxMsg->Data[0] = 7;
 		HAL_CAN_Transmit(&hcan2, 100);
 		hcan2.pTxMsg->DLC = 8;
@@ -68,7 +73,7 @@ int main(void) {
 		hcan2.pTxMsg->Data[7] = 0xAB;
 		HAL_CAN_Transmit(&hcan2, 100);
 		test = (test >= 4 ? 0 : test + 1);
-		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
+		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);*/
 		LedToggle(ORANGE);
 
 		overseer.checkForUpdate();
@@ -78,6 +83,9 @@ int main(void) {
             overseer.doRamping();
             RampTicker = 0;
         }
+
+
+
 		HAL_Delay(500);
 	}
 }
@@ -91,46 +99,37 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 	if ((CanHandle->pRxMsg)->StdId == MAIN_CAN_ID  && (CanHandle->pRxMsg)->IDE == CAN_ID_STD)
 	{
 		//if the data length is 8
-		if ((CanHandle->pRxMsg)->DLC == 8)
+		if ((CanHandle->pRxMsg)->DLC == 7)
 		{
-			int j;
-			switch (receiveState) {
-				case 0:
-					j = 0;
-					for (int i = 0; i < (CanHandle->pRxMsg)->DLC; i++) {
+			int j = 0;
+
+			//checks the first state to see if it is a L or a R
+			switch ((CanHandle->pRxMsg)->Data[0]) {
+
+				case 'L':
+					for (int i = 1; i < (CanHandle->pRxMsg)->DLC; i++) {
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
 
-					receiveState++;
 					break;
-				case 1:
-					j = 4;
-					for (int i = 0; i < (CanHandle->pRxMsg)->DLC; i++) {
+
+				case 'R':
+					int j = 3;
+					for (int i = 1; i < (CanHandle->pRxMsg)->DLC; i++) {
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
-					for(int i = 0; i < 8; i++)
-					{
-						printInt(i);
-						printString(": ");
-						printInt(thruster[i]);
-						printString("\t");
-					}
-					printString("\n");
 
-					receiveState++;
 					break;
 			}
 		}
 		else {
-			if ((CanHandle->pRxMsg)->DLC == 1) {
-				receiveState = 0;
-			}
+			//handle the error case
 		}
 	}
 	//restarts the interrupt
