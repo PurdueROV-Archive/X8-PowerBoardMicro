@@ -84,9 +84,18 @@ int main(void) {
             RampTicker = 0;
         }
 
+		for(int i = 0; i < 8; i++)
+		{
+			//PRINT THE DATA HERE
 
 
-		HAL_Delay(500);
+			//printInt();
+			//printString();
+
+		}
+
+
+		HAL_Delay(200);
 	}
 }
 
