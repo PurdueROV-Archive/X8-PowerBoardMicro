@@ -133,6 +133,8 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
+					char enabled = 255;
+					overseer.update(vect6Make(0,0,0,thruster[3],thruster[4],thruster[5]), vect3Make(0,0,0), enabled);
 
 					break;
 			}

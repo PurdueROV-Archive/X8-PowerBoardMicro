@@ -38,7 +38,7 @@ void Overseer::update(vect6 force, vect3 pivotPos, char on_off)
 // @note - Run in main while loop (not during interrupt).
 int Overseer::checkForUpdate(void)
 {
-	if (flag_NewData)
+	if (flag_NewData == NEW_DATA)
 		calculateAndPush();
 	return flag_NewData;
 }
