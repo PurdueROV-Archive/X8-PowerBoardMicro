@@ -47,14 +47,16 @@
 	HAL_CAN_Transmit(&hcan2, 10);  //sends the message
 */
 
-Overseer overseer;
-volatile uint_fast8_t RampTicker;
+// Globals:
+Overseer overseer;					// Handles all aspects of thrusters/movement
+volatile uint_fast8_t RampTicker;	// Ticker/Timing count for ramping thruster power
 
 int main(void) {
 
 	initEverythig();
 	uint8_t test = 0;
 
+	// Create Thruster/Movement Overseer
 	overseer = Overseer();
 
 	while (1) {
@@ -76,8 +78,10 @@ int main(void) {
 		HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);*/
 		LedToggle(ORANGE);
 
+		// Checks if new data has come in from Control via UDP.
 		overseer.checkForUpdate();
 
+		// If timer is reached, motor power is ramped.
 		if (RampTicker >= 20)
         {
             overseer.doRamping();
@@ -134,7 +138,9 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 						j++;
 					}
 					char enabled = 255;
-					overseer.update(vect6Make(0,0,0,thruster[3],thruster[4],thruster[5]), vect3Make(0,0,0), enabled);
+					// TODO: Adjust what are now 0's to their proper values. 
+					//	enabled and pivot position also needs to be added to the packets sent.
+					overseer.update(vect6Make(thruster[0],thruster[1],thruster[2],thruster[3],thruster[4],thruster[5]), vect3Make(0,0,0), enabled);
 
 					break;
 			}

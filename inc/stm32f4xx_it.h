@@ -31,6 +31,7 @@ void CAN1_RX0_IRQHandler(void);
 void DMA2_Stream2_IRQHandler(void);
 void DMA2_Stream7_IRQHandler(void);
 
+// RampTicker intialized in main.cpp, uses stm32f4xx_it.c to increment timer.
 extern volatile uint_fast8_t RampTicker;
 
 #ifdef __cplusplus
