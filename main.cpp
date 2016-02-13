@@ -91,11 +91,22 @@ int main(void) {
 		for(int i = 0; i < 8; i++)
 		{
 			//PRINT THE DATA HERE
-
+			printString("\nThrusters:\n");
+			printString("0: ");
+			printInt(thruster[0]);
+			printString("\t1: ");
+			printInt(thruster[1]);
+			printString("\t2: ");
+			printInt(thruster[2]);
+			printString("\n3: ");
+			printInt(thruster[3]);
+			printString("\t4: ");
+			printInt(thruster[4]);
+			printString("\t5: ");
+			printInt(thruster[5]);
 
 			//printInt();
 			//printString();
-
 		}
 
 
@@ -112,7 +123,7 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 	if ((CanHandle->pRxMsg)->StdId == MAIN_CAN_ID  && (CanHandle->pRxMsg)->IDE == CAN_ID_STD)
 	{
 		//if the data length is 8
-		if ((CanHandle->pRxMsg)->DLC == 7)
+		if ((CanHandle->pRxMsg)->DLC == 8)
 		{
 			int j = 0;
 
@@ -120,18 +131,18 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 			switch ((CanHandle->pRxMsg)->Data[0]) {
 
 				case 'L':
-					for (int i = 1; i < (CanHandle->pRxMsg)->DLC; i++) {
+					for (int i = 1; i < (CanHandle->pRxMsg)->DLC - 1; i++) {
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
 						j++;
 					}
-
+					LedToggle(GREEN);
 					break;
 
 				case 'R':
 					int j = 3;
-					for (int i = 1; i < (CanHandle->pRxMsg)->DLC; i++) {
+					for (int i = 1; i < (CanHandle->pRxMsg)->DLC - 1; i++) {
 						thruster[j] = (CanHandle->pRxMsg)->Data[i];
 						thruster[j] = thruster[j] << 8;
 						thruster[j] += (CanHandle->pRxMsg)->Data[++i];
@@ -141,7 +152,7 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* CanHandle)
 					// TODO: Adjust what are now 0's to their proper values. 
 					//	enabled and pivot position also needs to be added to the packets sent.
 					overseer.update(vect6Make(thruster[0],thruster[1],thruster[2],thruster[3],thruster[4],thruster[5]), vect3Make(0,0,0), enabled);
-
+					LedToggle(RED);
 					break;
 			}
 		}
