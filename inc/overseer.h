@@ -26,6 +26,8 @@ typedef struct {
 #define NO_NEW_DATA 0
 #define NEW_DATA 1
 
+// TODO: MAKE NEWTONMETER_OVERFLOW and CHANGE Matrix ints to int32_t
+
 #define MAX(x,y) (x > y) ? x : y
 #define MIN(x,y) (x > y) ? y : x
 

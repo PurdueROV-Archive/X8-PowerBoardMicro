@@ -100,6 +100,19 @@ vect6 div6(vect6 a, int factor)
     return result;
 }
 
+int max(vect3 vect)
+{
+    return MAX(MAX(vect.x, vect.y), vect.z);
+}
+int max(vect6 vect)
+{
+    return MAX(MAX(MAX(MAX(MAX(vect.L.x, vect.L.y), vect.L.z), vect.R.x), vect.R.y), vect.R.z);
+}
+int max(vect8 vect)
+{
+    return MAX(MAX(MAX(MAX(MAX(MAX(MAX(vect.a, vect.b), vect.c), vect.d), vect.e), vect.f), vect.g), vect.h);
+}
+
 vect3 vect3Make(int a, int b, int c)
 {
     vect3 result;

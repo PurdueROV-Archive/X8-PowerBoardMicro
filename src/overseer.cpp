@@ -47,7 +47,31 @@ int Overseer::checkForUpdate(void)
 void Overseer::calculateAndPush(void)
 {
 	thrustMapper.calculateThrustMap(target_force);
+    int max = 0;
+    if ((max = thrustMapper.thrust_map.max()) > NEWTONMETER_OVERFLOW)
+        scaleOverflow(&thrustMapper.thrust_map, max);
+    // Linearize i2c int to actual thruster power output.
 	// send the thrustMapper.thrust_map to the motors (thrusters) here:
+}
+
+
+void Overseer::scaleOverflow(vect8 * thrust_map, int max)
+{
+    thrust_map->a /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->b /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->c /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->d /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->e /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->f /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->g /= (scale * max) / NEWTONMETER_OVERFLOW;
+    thrust_map->h /= (scale * max) / NEWTONMETER_OVERFLOW;
+}
+
+
+// TODO: change the units for the resulting thrust_map from newtons to i2c ints representing thruster power.
+void Overseer::scaleNewtonsToInt(void)
+{
+    //thrust_map
 }
 
 
