@@ -54,8 +54,12 @@ void Overseer::calculateAndPush(void)
 }
 
 
+// Scales all thrust values by the maximum overflowing thrust, keeping the same force vector.
 void Overseer::scaleOverflow(vect8 * thrust_map, int32_t max)
 {
+    if (max < THRUST_MAX)
+        return;
+
     float scale = (float) THRUST_MAX / max;
     scale *= FLOATPT_TO_INT_SCALE;
 

@@ -26,7 +26,6 @@ typedef struct {
 #define NO_NEW_DATA 0
 #define NEW_DATA 1
 
-// TODO: MAKE NEWTONMETER_MAX and CHANGE Matrix ints to int32_t
 #define THRUST_MAX 32767.0
 #define FLOATPT_TO_INT_SCALE 10000
 
