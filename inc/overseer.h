@@ -26,10 +26,10 @@ typedef struct {
 #define NO_NEW_DATA 0
 #define NEW_DATA 1
 
-// TODO: MAKE NEWTONMETER_OVERFLOW and CHANGE Matrix ints to int32_t
+// TODO: MAKE NEWTONMETER_MAX and CHANGE Matrix ints to int32_t
+#define THRUST_MAX 32767.0
+#define FLOATPT_TO_INT_SCALE 10000
 
-#define MAX(x,y) (x > y) ? x : y
-#define MIN(x,y) (x > y) ? y : x
 
 // OVERSEER CLASS
 
@@ -58,6 +58,7 @@ class Overseer
 		int checkForUpdate(void);
 		void calculateAndPush(void);
 		void updateFromThrusters(void);
+		void scaleOverflow(vect8 * thrust_map, int32_t max);
         void doRamping(void);
 		int flag_NewData;
 

@@ -5,18 +5,18 @@ Purdue IEEE ROV
 */
 #include "matrices.h"
 
-int dot6(vect6 a, vect6 b)
+int32_t dot6(vect6 a, vect6 b)
 {
     //return a.L.x * b.L.x + a.L.y * b.L.y + a.L.z * b.L.z + a.R.x * b.R.x + a.R.y * b.R.y + a.R.z * b.R.z; 
     return dot(a.L,b.L) + dot(a.R,b.R);
 }
 
-int dot(vect3 a, vect3 b)
+int32_t dot(vect3 a, vect3 b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-int dot2(vect2 a, vect2 b)
+int32_t dot2(vect2 a, vect2 b)
 {
     return a.a * b.a + a.b * b.b;
 }
@@ -66,7 +66,7 @@ vect6 sub6(vect6 a, vect6 b)
     return result;
 }
 
-vect3 mul(vect3 a, int factor)
+vect3 mul(vect3 a, int32_t factor)
 {
     vect3 result;
     result.x = a.x * factor;
@@ -75,7 +75,7 @@ vect3 mul(vect3 a, int factor)
     return result;
 }
 
-vect6 mul6(vect6 a, int factor)
+vect6 mul6(vect6 a, int32_t factor)
 {
     vect6 result;
     result.L = mul(a.L, factor);
@@ -83,7 +83,7 @@ vect6 mul6(vect6 a, int factor)
     return result;
 }
 
-vect3 div(vect3 a, int factor)
+vect3 div(vect3 a, int32_t factor)
 {
     vect3 result;
     result.x = a.x / factor;
@@ -92,7 +92,7 @@ vect3 div(vect3 a, int factor)
     return result;
 }
 
-vect6 div6(vect6 a, int factor)
+vect6 div6(vect6 a, int32_t factor)
 {
     vect6 result;
     result.L = div(a.L, factor);
@@ -100,20 +100,20 @@ vect6 div6(vect6 a, int factor)
     return result;
 }
 
-int max(vect3 vect)
+int32_t max3(vect3 vect)
 {
     return MAX(MAX(vect.x, vect.y), vect.z);
 }
-int max(vect6 vect)
+int32_t max6(vect6 vect)
 {
     return MAX(MAX(MAX(MAX(MAX(vect.L.x, vect.L.y), vect.L.z), vect.R.x), vect.R.y), vect.R.z);
 }
-int max(vect8 vect)
+int32_t max8(vect8 vect)
 {
     return MAX(MAX(MAX(MAX(MAX(MAX(MAX(vect.a, vect.b), vect.c), vect.d), vect.e), vect.f), vect.g), vect.h);
 }
 
-vect3 vect3Make(int a, int b, int c)
+vect3 vect3Make(int32_t a, int32_t b, int32_t c)
 {
     vect3 result;
     result.x = a;
@@ -122,7 +122,7 @@ vect3 vect3Make(int a, int b, int c)
     return result;
 }
 
-vect6 vect6Make(int a, int b, int c, int d, int e, int f)
+vect6 vect6Make(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f)
 {
     vect6 result;
     result.L = vect3Make(a, b, c);
@@ -130,7 +130,7 @@ vect6 vect6Make(int a, int b, int c, int d, int e, int f)
     return result;
 }
 
-vect2 vect2Make(int a, int b)
+vect2 vect2Make(int32_t a, int32_t b)
 {
     vect2 result;
     result.a = a;
@@ -174,7 +174,7 @@ matrix2_2 matMul_22x22(matrix2_2 a, matrix2_2 b)
 matrix2_2 invert2_2(matrix2_2 m)
 {
     matrix2_2 result;
-    int det = m.one.a * m.two.b - m.one.b * m.two.a;//ad-bc
+    int32_t det = m.one.a * m.two.b - m.one.b * m.two.a;//ad-bc
     result.one.a = m.two.b*1024/det;
     result.two.b = m.one.a*1024/det;
     result.one.b = -m.one.b*1024/det;

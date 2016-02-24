@@ -179,12 +179,6 @@ void ThrustMapper::calculateThrustMap(vect6 target_vector)
 	thrust_map = matMul_86x61(mapper_matrices.matrices[mapper_matrices.currentMapperMatrix], desired_force_vector);
 }
 
-// TODO: change the units for the resulting thrust_map from newtons to i2c ints representing thruster power.
-void scaleNewtonsToInt()
-{
-	//thrust_map
-}
-
 /*
  *	Changes the mapper_matrix used depending on what thrusters are contributing to the movement of the ROV.
  *	Only accepts a byte. Each bit corresponds to whether each of the 8 thrusters are enabled.

@@ -4,12 +4,14 @@ January 2016
 Purdue IEEE ROV
 */
 
+#include "main.h"
+
 #ifndef __MATRICES__H
 #define __MATRICES__H
 typedef struct{
-    int x;
-    int y;
-    int z;
+    int32_t x;
+    int32_t y;
+    int32_t z;
 }vect3;
 
 typedef struct{
@@ -46,19 +48,19 @@ typedef struct{
 }matrix3_3;
 
 typedef struct{
-    int a;
-    int b;
-    int c;
-    int d;
-    int e;
-    int f;
-    int g;
-    int h;
+    int32_t a;
+    int32_t b;
+    int32_t c;
+    int32_t d;
+    int32_t e;
+    int32_t f;
+    int32_t g;
+    int32_t h;
 }vect8;
 
 typedef struct{
-    int a;
-    int b;
+    int32_t a;
+    int32_t b;
 }vect2;
 
 typedef struct{
@@ -67,9 +69,9 @@ typedef struct{
 }matrix2_2;
 
 vect3 cross(vect3, vect3);
-int dot(vect3, vect3);
-int dot6(vect6, vect6);
-int dot2(vect2, vect2);
+int32_t dot(vect3, vect3);
+int32_t dot6(vect6, vect6);
+int32_t dot2(vect2, vect2);
 
 vect3 add(vect3, vect3);
 vect6 add6(vect6, vect6);
@@ -77,15 +79,19 @@ vect6 add6(vect6, vect6);
 vect3 sub(vect3, vect3);
 vect6 sub6(vect6, vect6);
 
-vect3 mul(vect3, int);
-vect6 mul6(vect6, int);
+vect3 mul(vect3, int32_t);
+vect6 mul6(vect6, int32_t);
 
-vect3 div(vect3, int);
-vect6 div6(vect6, int);
+vect3 div(vect3, int32_t);
+vect6 div6(vect6, int32_t);
 
-vect3 vect3Make(int, int, int);
-vect6 vect6Make(int, int, int, int, int, int);
-vect2 vect2Make(int, int);
+int32_t max3(vect3);
+int32_t max6(vect6);
+int32_t max8(vect8);
+
+vect3 vect3Make(int32_t, int32_t, int32_t);
+vect6 vect6Make(int32_t, int32_t, int32_t, int32_t, int32_t, int32_t);
+vect2 vect2Make(int32_t, int32_t);
 
 vect8 matMul_86x61(matrix8_6, vect6);
 vect3 matMul_33x31(matrix3_3,vect3);
